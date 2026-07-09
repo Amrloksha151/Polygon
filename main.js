@@ -1,5 +1,6 @@
 import * as THREE from 'three';
 import { RGBELoader } from 'three/addons/loaders/RGBELoader.js';
+import { HDRLoader } from 'three/addons/loaders/HDRLoader.js';
 import './style.css';
 
 const scene = new THREE.Scene();
@@ -7,10 +8,15 @@ const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerH
 const renderer = new THREE.WebGLRenderer({
     canvas: document.getElementById('bg')
 });
-const pmremGenerator = new THREE.PMREMGenerator( renderer );
-const hdriLoader = new RGBELoader()
+
 renderer.setSize( window.innerWidth, window.innerHeight );
 document.body.appendChild( renderer.domElement );
+
+const loader = new HDRLoader();
+const myhdri = await loader.loadAsync('./textures/fireplace_2k.hdr');
+myhdri.mapping = THREE.EquirectangularReflectionMapping;
+scene.background = myhdri;
+scene.environment = myhdri;
 
 const myPhotoTexture = new THREE.TextureLoader().load('./textures/amrloksha.jpeg');
 const myPhoto = new THREE.Mesh(new THREE.SphereGeometry(3, 30, 30), new THREE.MeshStandardMaterial({ map: myPhotoTexture }));
@@ -27,14 +33,6 @@ function animate() {
     renderer.render(scene, camera);
 }
 renderer.setAnimationLoop(animate);
-
-hdriLoader.load( './textures/fireplace_2k.hdr', function ( texture ) {
-  const hdri = pmremGenerator.fromEquirectangular( texture ).texture;
-  texture.dispose(); 
-  scene.environment = hdri;
-  scene.background = hdri;
-  renderer.render(scene, camera);
-} );
 
 function moveCamera() {
     const t = document.body.getBoundingClientRect().top;
