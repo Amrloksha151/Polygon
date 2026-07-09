@@ -13,12 +13,12 @@ renderer.setSize( window.innerWidth, window.innerHeight );
 document.body.appendChild( renderer.domElement );
 
 const loader = new HDRLoader();
-const myhdri = await loader.loadAsync('./textures/fireplace_2k.hdr');
+const myhdri = await loader.loadAsync('/fireplace_2k.hdr');
 myhdri.mapping = THREE.EquirectangularReflectionMapping;
 scene.background = myhdri;
 scene.environment = myhdri;
 
-const myPhotoTexture = new THREE.TextureLoader().load('./textures/amrloksha.jpeg');
+const myPhotoTexture = new THREE.TextureLoader().load('/amrloksha.jpeg');
 const myPhoto = new THREE.Mesh(new THREE.SphereGeometry(3, 30, 30), new THREE.MeshStandardMaterial({ map: myPhotoTexture }));
 scene.add(myPhoto);
 myPhoto.position.set(0, 0, -25);
